@@ -22,10 +22,6 @@ export const appointmentCreate = async (req, res) => {
     try {
         const { customer, dateTime, serviceType } = req.body;
 
-        if (!customer || !dateTime || !serviceType) {
-            return res.status(400).json({ erro: "Cliente, Data e Tipo de serviço são obrigatórios" })
-        };
-
         const newAppointment = await appointmentCreator(customer, dateTime, serviceType);
 
         res.status(201).json(newAppointment);
@@ -39,7 +35,7 @@ export const appointmentUpdate = async (req, res) => {
     try {
         const appointmentUpdated = await appointmentUpdater(req.params.id, req.body);
         if (!appointmentUpdated) {
-            return res.status(404).json({ erro: "Agendamento não encontrado" }) 
+            return res.status(404).json({ error: "Agendamento não encontrado" }) 
         };
         res.status(200).json(appointmentUpdated);
     } catch (error) {
@@ -51,7 +47,7 @@ export const appointmentDelete = async (req, res) => {
     try {
         const appointmentDeleted = await appointmentRemover(req.params.id);
         if (!appointmentDeleted) {
-            return res.status(404).json({ erro: "Agendamento não encontrado" }) 
+            return res.status(404).json({ error: "Agendamento não encontrado" }) 
         };
         res.status(200).json(appointmentDeleted);
     } catch (error) {
