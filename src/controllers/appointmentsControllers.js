@@ -1,24 +1,25 @@
 import { listAllAppointments, listAppointmentById, appointmentCreator, appointmentUpdater, appointmentRemover } from '../services/appointmentsServices.js';
 
-export const appointmentsList = async (req, res) => {
+export const appointmentsList = async (req, res, next) => {
     try {
         const appointments = await listAllAppointments();
         res.status(200).json(appointments);
+        
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        next(error);
     };
 };
 
-export const appointmentListById = async (req, res) => {
+export const appointmentListById = async (req, res, next) => {
     try {
         const appointmentsById = await listAppointmentById(req.params.id);
         res.status(200).json(appointmentsById)
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        next(error);
     };
 };
 
-export const appointmentCreate = async (req, res) => {
+export const appointmentCreate = async (req, res, next) => {
     try {
         const { customer, dateTime, serviceType } = req.body;
 
@@ -27,11 +28,11 @@ export const appointmentCreate = async (req, res) => {
         res.status(201).json(newAppointment);
 
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        next(error);
     };
 };
 
-export const appointmentUpdate = async (req, res) => {
+export const appointmentUpdate = async (req, res, next) => {
     try {
         const appointmentUpdated = await appointmentUpdater(req.params.id, req.body);
         if (!appointmentUpdated) {
@@ -39,11 +40,11 @@ export const appointmentUpdate = async (req, res) => {
         };
         res.status(200).json(appointmentUpdated);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        next(error);
     } 
 };
 
-export const appointmentDelete = async (req, res) => {
+export const appointmentDelete = async (req, res, next) => {
     try {
         const appointmentDeleted = await appointmentRemover(req.params.id);
         if (!appointmentDeleted) {
@@ -51,7 +52,7 @@ export const appointmentDelete = async (req, res) => {
         };
         res.status(200).json(appointmentDeleted);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        next(error);
     } 
 };
 
