@@ -1,7 +1,7 @@
-import { Router } from "express";
-import { appointmentsList, appointmentListById, appointmentCreate, appointmentUpdate, appointmentDelete } from "../controllers/appointmentsControllers.js";
-import { validateBody } from "../middlewares/validateBody.js";
-import { tokenVerification } from "../middlewares/authMiddleware.js";
+import { Router } from 'express';
+import { appointmentsList, appointmentListById, appointmentCreate, appointmentUpdate, appointmentDelete } from '../controllers/appointmentsControllers.js';
+import { validateBody } from '../middlewares/validateBody.js';
+import { tokenVerification } from '../middlewares/authMiddleware.js';
 
 
 const router = Router();

@@ -3,9 +3,9 @@ import mongoose from 'mongoose';
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGODB_URI);
-    console.log("MongoDB conectado!");
+    console.log('MongoDB conectado!');
   } catch (erro) {
-    console.log("Erro ao conectar no MongoDB: " + erro.message);
+    console.log('Erro ao conectar no MongoDB: ' + erro.message);
     process.exit(1);
   }
 }

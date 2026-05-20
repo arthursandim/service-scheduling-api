@@ -1,5 +1,5 @@
-import Appointment from "../models/Appointment.js";
-import emailTransporter from "../config/emailTransporter.js"
+import Appointment from '../models/Appointment.js';
+import emailTransporter from '../config/emailTransporter.js'
 
 export const listAllAppointments = async () => {
     const appointments = await Appointment.find();
@@ -17,7 +17,7 @@ export const appointmentCreator = async (customer, dateTime, serviceType) => {
     const mailOptions = {
         from: process.env.EMAIL_USER,
         to: process.env.EMAIL_USER,
-        subject: "Novo agendamento",
+        subject: 'Novo agendamento',
         html: ` <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; background-color: #f9f9f9; border-radius: 8px;">
                     <h2 style="color: #333;">Novo agendamento criado</h2>
                     <hr style="border: none; border-top: 1px solid #ddd;" />

@@ -36,19 +36,19 @@ export const appointmentUpdate = async (req, res, next) => {
     try {
         const appointmentUpdated = await appointmentUpdater(req.params.id, req.body);
         if (!appointmentUpdated) {
-            return res.status(404).json({ error: "Agendamento não encontrado" }) 
+            return res.status(404).json({ error: 'Agendamento não encontrado' })
         };
         res.status(200).json(appointmentUpdated);
     } catch (error) {
         next(error);
-    } 
+    }
 };
 
 export const appointmentDelete = async (req, res, next) => {
     try {
         const appointmentDeleted = await appointmentRemover(req.params.id);
         if (!appointmentDeleted) {
-            return res.status(404).json({ error: "Agendamento não encontrado" }) 
+            return res.status(404).json({ error: 'Agendamento não encontrado' }) 
         };
         res.status(200).json(appointmentDeleted);
     } catch (error) {
