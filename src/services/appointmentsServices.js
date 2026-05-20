@@ -43,3 +43,46 @@ export const appointmentRemover = async (appointmentID) => {
     const appointment = await Appointment.findByIdAndDelete(appointmentID);
     return (appointment);
 }
+
+export const getAvailableSlots = async () => {
+    const slots = [6, 9, 12, 15];
+    const today = new Date();
+
+    const nextTwoDays = [];
+    let current = new Date(today);
+    current.setDate(current.getDate() + 1);
+
+    while (nextTwoDays.length < 7) {
+
+        if (current.getDay() !== 0) {
+            nextTwoDays.push(new Date(current));
+        }
+        current.setDate(current.getDate() + 1);
+    };
+
+    const availableSlots = [];
+
+    for (const day of nextTwoDays) {
+        const startOfDay = new Date(day);
+        startOfDay.setHours(0, 0, 0, 0);
+
+        const endOfDay = new Date(day);
+        endOfDay.setHours(23, 59, 59, 999);
+
+        const bookedAppointments = await Appointment.find({
+            dateTime: {
+                $gte: startOfDay,
+                $lt: endOfDay
+            }
+        });
+
+        const bookedHours = bookedAppointments.map(a => a.dateTime.getHours());
+
+        const freeSlots = slots.filter(slot => !bookedHours.includes(slot));
+
+        availableSlots.push({ date: day.toLocaleDateString('pt-BR'), slots: freeSlots });
+    };
+
+    return availableSlots;
+
+}
