@@ -1,4 +1,5 @@
 import Appointment from '../models/Appointment.js';
+import Customer from '../models/Customer.js';
 import emailTransporter from '../config/emailTransporter.js';
 import { createCalendarEvent } from '../services/calendarServices.js';
 
@@ -13,6 +14,11 @@ export const listAppointmentById = async (appointmentID) => {
 };
 
 export const appointmentCreator = async (customer, dateTime, serviceType) => {
+
+    if (typeof customer === 'string') {
+        customer = await Customer.findById(customer);
+    }
+
     const newAppointment = await Appointment.create({ customer: customer._id, dateTime, serviceType });
 
     await createCalendarEvent(customer.name, serviceType, dateTime, customer.address)

@@ -7,4 +7,4 @@ const professionalSchema = new mongoose.Schema({
   googleRefreshToken: { type: String }
 }, { timestamps: true })
 
-export default mongoose.model('Professional', professionalSchema)
+export default mongoose.model('Professional', professionalSchema);
