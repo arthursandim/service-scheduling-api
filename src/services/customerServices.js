@@ -5,6 +5,8 @@ export const customerCreator = async (name, phone, address) => {
     const normalized = normalizePhone(phone);
     
     const existing = await Customer.findOne({ phone: normalized});
-    if (existing) return existing;
-    return await Customer.create({ name, phone: normalized, address });
+    if (existing) {
+        return existing;
+    };
+    return (await Customer.create({ name, phone: normalized, address }));
 };

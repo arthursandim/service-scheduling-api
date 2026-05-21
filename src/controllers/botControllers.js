@@ -13,7 +13,7 @@ export const sendMessage = async (req, res, next) => {
             const jsonString = chat.slice(jsonStart, jsonEnd + 1);
             const parsed = JSON.parse(jsonString);
             const customer = await customerCreator(parsed.name, parsed.phone, parsed.address);
-            await appointmentCreator(customer._id, parsed.dateTime, parsed.serviceType);
+            await appointmentCreator(customer, parsed.dateTime, parsed.serviceType);
         }
         res.status(200).json(chat);
     } catch (error) {

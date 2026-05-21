@@ -1,5 +1,6 @@
 import Appointment from '../models/Appointment.js';
-import emailTransporter from '../config/emailTransporter.js'
+import emailTransporter from '../config/emailTransporter.js';
+import { createCalendarEvent } from '../services/calendarServices.js';
 
 export const listAllAppointments = async () => {
     const appointments = await Appointment.find();
@@ -12,7 +13,9 @@ export const listAppointmentById = async (appointmentID) => {
 };
 
 export const appointmentCreator = async (customer, dateTime, serviceType) => {
-    const newAppointment = await Appointment.create({ customer, dateTime, serviceType });
+    const newAppointment = await Appointment.create({ customer: customer._id, dateTime, serviceType });
+
+    await createCalendarEvent(customer.name, serviceType, dateTime, customer.address)
 
     const mailOptions = {
         from: process.env.EMAIL_USER,
