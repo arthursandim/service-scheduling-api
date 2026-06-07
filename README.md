@@ -9,8 +9,9 @@ Backend do sistema de agendamento de serviços para profissionais autônomos.
 - JWT + bcrypt (autenticação)
 - Joi (validação)
 - Nodemailer (notificações por email)
-- Gemini API (bot de agendamento)
+- Gemini API (bot de agendamento com arquitetura em camadas)
 - Google Calendar API (criação de eventos)
+- WhatsApp Business API — Meta (canal de mensagens)
 
 ## Instalação
 
