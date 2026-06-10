@@ -41,6 +41,7 @@ export const botChat = async (history, message, availableSlots) => {
 
     const result = await chat.sendMessage(message);
     const response = result.response.text();
-    return response;
+    const updatedHistory = await chat.getHistory();
+    return { response, history: updatedHistory };
 };
 

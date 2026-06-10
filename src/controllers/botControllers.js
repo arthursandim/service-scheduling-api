@@ -6,7 +6,8 @@ export const sendMessage = async (req, res, next) => {
     try {
         const { history, message } = req.body;
         const availableSlots = await getAvailableSlots();
-        const chat = await botChat(history, message, availableSlots);
+        const { response: chat } = await botChat(history, message, availableSlots);
+
         if (chat.includes('"action":"create_appointment"')) {
             const jsonStart = chat.indexOf('{');
             const jsonEnd = chat.lastIndexOf('}');
