@@ -31,6 +31,9 @@ GEMINI_API_KEY=<chave_gemini>
 GOOGLE_CLIENT_ID=<client_id_google_cloud>
 GOOGLE_CLIENT_SECRET=<client_secret_google_cloud>
 GOOGLE_CALLBACK_URL=http://localhost:<porta>/auth/google/callback
+WHATSAPP_VERIFY_TOKEN=<token_de_verificacao_do_webhook>
+WHATSAPP_TOKEN=<token_permanente_meta_business>
+WHATSAPP_PHONE_NUMBER_ID=<id_do_numero_whatsapp_no_meta>
 ```
 
 ## Executando
@@ -67,7 +70,13 @@ npm start
 ### Chat
 | Método | Rota | Descrição |
 |---|---|---|
-| POST | `/chat` | Envia mensagem ao bot de agendamento |
+| POST | `/chat` | Envia mensagem ao bot de agendamento (uso interno / Postman) |
+
+### WhatsApp
+| Método | Rota | Descrição |
+|---|---|---|
+| GET | `/whatsapp` | Verificação do webhook pelo Meta |
+| POST | `/whatsapp` | Recebe mensagens do WhatsApp e responde via bot |
 
 #### Body `/chat`
 ```json
