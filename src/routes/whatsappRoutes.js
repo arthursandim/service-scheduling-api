@@ -26,16 +26,18 @@ router.post('/', async (req, res) => {
 
     res.sendStatus(200);
 
+    let from;
+    
     try {
         const value = req.body.entry[0].changes[0].value;
         if (!value.messages) return;
         if (value.messages[0].type !== 'text') return;
 
-        const from = value.messages[0].from;
+        from = value.messages[0].from;
         const message = value.messages[0].text.body;
         const history = conversationHistory.get(from) || [];
         const availableSlots = await getAvailableSlots();
-        const { response, history: updatedHistory } = await botChat(history, message, availableSlots);
+        const { response, history: updatedHistory } = await botChat(history, message, availableSlots, from);
         conversationHistory.set(from, updatedHistory);
         console.log('RESPOSTA DO BOT:', response);
         await sendWhatsAppMessage(from, response);
@@ -50,6 +52,8 @@ router.post('/', async (req, res) => {
         }
     } catch (error) {
         console.error('Erro no processamento WhatsApp:', error);
+        await sendWhatsAppMessage(from, 'Desculpe, estou com uma instabilidade no momento. Por favor, tente novamente em alguns instantes.');
+
     }
 
 });

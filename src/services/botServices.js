@@ -2,7 +2,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const genAi = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-const buildSystemPrompt = (availableSlots) => {
+const buildSystemPrompt = (availableSlots, phoneNumber) => {
     const maxDate = availableSlots[availableSlots.length - 1]?.date || '';
     return `Você é o atendente virtual da empresa Sandim Jardinagem.
 
@@ -17,6 +17,8 @@ const buildSystemPrompt = (availableSlots) => {
                         - Limpeza de terreno: R$ 100,00 por caçamba retirada
 
                         Pergunte também o endereço completo onde o serviço será realizado e o número de telefone do cliente para contato.
+
+                        Quando for perguntar o telefone de contato, primeiro confirme: "Posso usar o número ${phoneNumber} como seu telefone de contato?" Se o cliente confirmar, use esse número. Se não, peça o número correto.
 
                         Após coletar o serviço, informe os horários disponíveis com base nos dados em "Horários disponíveis" acima. Os slots possíveis são 06h, 09h, 12h e 15h (segunda a sábado, das 06h às 18h — cada serviço dura 2h com 1h de intervalo). Pergunte se o usuário deseja um desses horários ou prefere outro dia.
 
@@ -33,9 +35,9 @@ const buildSystemPrompt = (availableSlots) => {
                         `;
 };
 
-export const botChat = async (history, message, availableSlots) => {
+export const botChat = async (history, message, availableSlots, phoneNumber) => {
 
-    const model = genAi.getGenerativeModel({ model: 'gemini-2.5-flash', systemInstruction: buildSystemPrompt(availableSlots) });
+    const model = genAi.getGenerativeModel({ model: 'gemini-2.5-flash', systemInstruction: buildSystemPrompt(availableSlots, phoneNumber) });
 
     const chat = model.startChat({ history: history });
 
