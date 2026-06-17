@@ -21,7 +21,11 @@ export const appointmentCreator = async (customer, dateTime, serviceType) => {
 
     const newAppointment = await Appointment.create({ customer: customer._id, dateTime, serviceType });
 
-    await createCalendarEvent(customer.name, serviceType, dateTime, customer.address)
+    try {
+        await createCalendarEvent(customer.name, serviceType, dateTime, customer.address);
+    } catch (error) {
+        console.error("Erro ao criar evento no Google Calendar:", error);
+    };
 
     const mailOptions = {
         from: process.env.EMAIL_USER,

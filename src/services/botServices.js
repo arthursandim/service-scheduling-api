@@ -35,7 +35,7 @@ const buildSystemPrompt = (availableSlots) => {
 
 export const botChat = async (history, message, availableSlots) => {
 
-    const model = genAi.getGenerativeModel({ model: 'gemini-3.5-flash', systemInstruction: buildSystemPrompt(availableSlots) });
+    const model = genAi.getGenerativeModel({ model: 'gemini-2.5-flash', systemInstruction: buildSystemPrompt(availableSlots) });
 
     const chat = model.startChat({ history: history });
 
