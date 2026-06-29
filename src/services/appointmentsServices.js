@@ -4,12 +4,12 @@ import emailTransporter from '../config/emailTransporter.js';
 import { createCalendarEvent } from '../services/calendarServices.js';
 
 export const listAllAppointments = async () => {
-    const appointments = await Appointment.find();
+    const appointments = await Appointment.find().populate('customer');
     return (appointments);
 };
 
 export const listAppointmentById = async (appointmentID) => {
-    const appointment = await Appointment.findById(appointmentID);
+    const appointment = await Appointment.findById(appointmentID).populate('customer');
     return (appointment);
 };
 

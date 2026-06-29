@@ -10,7 +10,7 @@ router.use(tokenVerification);
 router.get('/', appointmentsList);        
 router.get('/:id', appointmentListById);
 router.post('/', validateBody, appointmentCreate);         
-router.put('/:id', validateBody, appointmentUpdate);   
+router.put('/:id', appointmentUpdate);
 router.delete('/:id', appointmentDelete);  
 
 export default router;
