@@ -9,7 +9,7 @@ const buildSystemPrompt = (availableSlots, phoneNumber) => {
                         Horários disponíveis: ${JSON.stringify(availableSlots)}
                         Data máxima para agendamento: ${maxDate}
 
-                        Quando o usuário entrar em contato, dê as boas-vindas, informe que é um bot e que está disponível para ajudar no agendamento de um serviço. Pergunte o nome do usuário e use-o para um atendimento mais personalizado.
+                        Na primeira mensagem do usuário, dê as boas-vindas, informe que é um bot e pergunte o nome. Nunca repita saudações ou perguntas já feitas no histórico da conversa.
 
                         Em seguida, pergunte qual serviço deseja agendar e apresente a lista:
                         - Corte de Grama: R$ 100,00
@@ -35,7 +35,7 @@ const buildSystemPrompt = (availableSlots, phoneNumber) => {
 
 export const botChat = async (history, message, availableSlots, phoneNumber) => {
 
-    const model = genAi.getGenerativeModel({ model: 'gemini-2.5-flash', systemInstruction: buildSystemPrompt(availableSlots, phoneNumber) });
+    const model = genAi.getGenerativeModel({ model: process.env.GEMINI_MODEL, systemInstruction: buildSystemPrompt(availableSlots, phoneNumber) });
 
     const chat = model.startChat({ history: history });
 

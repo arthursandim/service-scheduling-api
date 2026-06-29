@@ -9,6 +9,7 @@ import { classifyIntent, checkGuardrails } from '../services/layeredBotServices.
 const router = Router();
 
 const conversationHistory = new Map();
+const contactedUsers = new Set();
 
 
 router.get('/', (req, res) => {
@@ -37,17 +38,29 @@ router.post('/', async (req, res) => {
 
         from = value.messages[0].from;
         const message = value.messages[0].text.body;
-        const intent = await classifyIntent(message);
-        if (intent !== 'agendar') {
-            await sendWhatsAppMessage(from, 'Olá! Sou o assistente virtual da Sandim Jardinagem e posso ajudar apenas com agendamentos de serviços. Para cancelamentos ou outras solicitações, entre em contato diretamente conosco.');
-            return;
-        };
-        const safe = await checkGuardrails(message);
-        if (!safe) {
-            await sendWhatsAppMessage(from, 'Não consigo continuar com essa conversa. Se precisar agendar um serviço, estou à disposição.');
-            return;
-        };
         const history = conversationHistory.get(from) || [];
+
+        if (!conversationHistory.has(from)) {
+            const intent = await classifyIntent(message);
+            if (intent === 'encerrar') {
+                contactedUsers.delete(from);
+                await sendWhatsAppMessage(from, 'Foi um prazer te atender! Se precisar de algo, é só chamar. Até logo! 😊');
+                return;
+            }
+            if (intent !== 'agendar') {
+                const greeting = !contactedUsers.has(from)
+                    ? 'Olá! Sou o assistente virtual da Sandim Jardinagem. No momento posso te ajudar com agendamentos de serviços. Como posso te atender?'
+                    : 'No momento posso te ajudar com agendamentos de serviços. Como posso te atender?';
+                contactedUsers.add(from);
+                await sendWhatsAppMessage(from, greeting);
+                return;
+            }
+            const safe = await checkGuardrails(message);
+            if (!safe) {
+                await sendWhatsAppMessage(from, 'Não consigo continuar com essa conversa. Se precisar agendar um serviço, estou à disposição.');
+                return;
+            }
+        }
         const availableSlots = await getAvailableSlots();
         const { response, history: updatedHistory } = await botChat(history, message, availableSlots, from);
         conversationHistory.set(from, updatedHistory);
@@ -60,6 +73,7 @@ router.post('/', async (req, res) => {
             const parsed = JSON.parse(jsonString);
             const customer = await customerCreator(parsed.name, parsed.phone, parsed.address);
             await appointmentCreator(customer, parsed.dateTime, parsed.serviceType);
+            conversationHistory.delete(from);
             await sendWhatsAppMessage(from, `Agendamento confirmado! ✅\n\nServiço: ${parsed.serviceType}\nData: ${new Date(parsed.dateTime).toLocaleString('pt-BR')}\n\nObrigado pelo contato, ${parsed.name}! Até breve.`);
         } else {
             await sendWhatsAppMessage(from, response);
