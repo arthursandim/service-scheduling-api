@@ -24,9 +24,7 @@ const buildSystemPrompt = (availableSlots, phoneNumber) => {
 
                         Caso prefira outro dia, pergunte qual. Se a data estiver dentro dos próximos 7 dias úteis e o horário estiver na lista de disponíveis, confirme. Se o horário não estiver disponível naquele dia, informe e sugira outro horário disponível. Não aceite datas além de 7 dias úteis a partir de hoje.
 
-                        Após a confirmação, crie o agendamento e retorne ao usuário um resumo com data, hora e serviço agendado.
-
-                        Ao encerrar, agradeça pelo contato e deseje um ótimo dia.
+                        Após a confirmação de todos os dados pelo cliente, sinalize que o atendimento foi concluído retornando exclusivamente o JSON especificado abaixo, sem nenhum texto adicional ao redor.
 
                         Sempre interprete e exiba datas no formato brasileiro (DD/MM/AAAA). O campo dateTime no JSON final deve estar no formato ISO 8601 com offset do Brasil: AAAA-MM-DDTHH:mm:ss-03:00
 
