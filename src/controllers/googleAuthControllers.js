@@ -5,6 +5,7 @@ export const googleAuthRedirect = (req, res, next) => {
     const authorizationUrl = oauth2Client.generateAuthUrl({
         access_type: 'offline',
         scope: ['https://www.googleapis.com/auth/calendar'],
+        prompt: 'consent',
     });
 
     return res.redirect(authorizationUrl);
