@@ -5,11 +5,12 @@ const genAi = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 export const classifyIntent = async (message) => {
     const model = genAi.getGenerativeModel({
         model: process.env.GEMINI_MODEL,
-        systemInstruction: `Você classifica a intenção do usuário em uma dessas opções: agendar, encerrar, outros.
+        systemInstruction: `Você classifica a intenção do usuário em uma dessas opções: agendar, saudacao, encerrar, outros.
 Responda APENAS com uma dessas palavras, sem pontuação, sem texto adicional.
 Use "agendar" somente quando o usuário claramente quer marcar um novo serviço.
+Use "saudacao" para cumprimentos e saudações (olá, bom dia, boa tarde, oi, tudo bem, etc.).
 Use "encerrar" quando o usuário quiser terminar a conversa (tchau, até logo, encerrar, obrigado, etc.).
-Use "outros" para qualquer outra coisa: cancelamentos, consultas, saudações, dúvidas ou mensagens sem sentido.`
+Use "outros" para qualquer outra coisa: cancelamentos, consultas, dúvidas ou mensagens sem sentido.`
 
     });
 

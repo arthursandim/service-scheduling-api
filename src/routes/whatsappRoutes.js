@@ -47,7 +47,7 @@ router.post('/', async (req, res) => {
                 await sendWhatsAppMessage(from, 'Foi um prazer te atender! Se precisar de algo, é só chamar. Até logo! 😊');
                 return;
             }
-            if (intent !== 'agendar') {
+            if (intent === 'outros') {
                 const greeting = !contactedUsers.has(from)
                     ? 'Olá! Sou o assistente virtual da Sandim Jardinagem. No momento posso te ajudar com agendamentos de serviços. Como posso te atender?'
                     : 'No momento posso te ajudar com agendamentos de serviços. Como posso te atender?';
