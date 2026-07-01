@@ -7,8 +7,11 @@ import emailTransporter from '../config/emailTransporter.js';
 
 
 export const userCreator = async (name, email, password) => {
+    const existingUser = await Professional.findOne({ email });
+    if (existingUser) {
+        throw new Error('Este email já está em uso.')
+    };
     const hashedPassword = await bcrypt.hash(password, 10);
-
     const newUser = await Professional.create({ name, email, password: hashedPassword });
     const token = crypto.randomInt(100000, 999999).toString();
     await Professional.findByIdAndUpdate(newUser._id, { verificationToken: token });
@@ -43,7 +46,7 @@ export const userAuthenticator = async (email, password) => {
     }
 
     if (!user.verified) {
-        throw new Error('Usuário não verificado');        
+        throw new Error('Usuário não verificado');
     }
 
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1d' });
@@ -53,18 +56,22 @@ export const userAuthenticator = async (email, password) => {
 };
 
 export const verifyToken = async (token) => {
-    const user = await Professional.findOne({verificationToken: token});
+    const user = await Professional.findOne({ verificationToken: token });
     if (!user) {
         throw new Error('Código de verificação inválido ou expirado');
     }
 
     await Professional.findByIdAndUpdate(user._id, { verified: true, verificationToken: null });
-    
+
+    const authToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+
+    return { token: authToken, name: user.name };
+
 };
 
 export const resendVerificationToken = async (email) => {
     const user = await Professional.findOne({ email });
-    if (!user) throw new Error('Usuário não encontrado');
+    if (!user) throw new Error('Email não encontrado. Tente se cadastrar novamente.');
     if (user.verified) throw new Error('Conta já verificada');
 
     const token = crypto.randomInt(100000, 999999).toString();
