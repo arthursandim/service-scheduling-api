@@ -2,6 +2,16 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const genAi = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
+/**
+ * Monta o system prompt do atendente virtual com base nos horários disponíveis.
+ * Define personalidade, serviços oferecidos, regras de agendamento e o formato
+ * de saída JSON esperado ao final da conversa.
+ *
+ * Limitações:
+ * - Aceita agendamentos apenas nos próximos 7 dias úteis
+ * - Horários disponíveis: 06h, 09h, 12h e 15h (seg–sáb)
+ * - Cada serviço ocupa 2h com 1h de intervalo entre atendimentos
+ */
 const buildSystemPrompt = (availableSlots, phoneNumber) => {
     const maxDate = availableSlots[availableSlots.length - 1]?.date || '';
     return `Você é o atendente virtual da empresa Sandim Jardinagem.
@@ -33,15 +43,31 @@ const buildSystemPrompt = (availableSlots, phoneNumber) => {
                         `;
 };
 
+/**
+ * Envia uma mensagem ao modelo Gemini dentro de uma sessão de chat com histórico.
+ * Loga o consumo de tokens a cada chamada para monitoramento de uso da API.
+ *
+ * @param {Array} history - Histórico de mensagens da conversa atual
+ * @param {string} message - Mensagem enviada pelo usuário
+ * @param {Array} availableSlots - Horários disponíveis para agendamento
+ * @param {string} phoneNumber - Número de telefone do usuário no WhatsApp
+ * @returns {{ response: string, history: Array }} Resposta do modelo e histórico atualizado
+ */
 export const botChat = async (history, message, availableSlots, phoneNumber) => {
+    try {
+        const model = genAi.getGenerativeModel({ model: process.env.GEMINI_MODEL, systemInstruction: buildSystemPrompt(availableSlots, phoneNumber) });
 
-    const model = genAi.getGenerativeModel({ model: process.env.GEMINI_MODEL, systemInstruction: buildSystemPrompt(availableSlots, phoneNumber) });
+        const chat = model.startChat({ history });
+        const result = await chat.sendMessage(message);
+        const response = result.response.text();
+        const updatedHistory = await chat.getHistory();
 
-    const chat = model.startChat({ history: history });
+        const usage = result.response.usageMetadata;
+        console.log(`[Gemini tokens] prompt: ${usage.promptTokenCount} | resposta: ${usage.candidatesTokenCount} | total: ${usage.totalTokenCount}`);
 
-    const result = await chat.sendMessage(message);
-    const response = result.response.text();
-    const updatedHistory = await chat.getHistory();
-    return { response, history: updatedHistory };
+        return { response, history: updatedHistory };
+    } catch (error) {
+        console.error('[botChat] Erro ao chamar Gemini API:', error.message);
+        throw new Error('O assistente virtual está temporariamente indisponível. Tente novamente em instantes.');
+    }
 };
-
