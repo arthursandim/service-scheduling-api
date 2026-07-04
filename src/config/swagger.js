@@ -9,7 +9,7 @@ const options = {
             description: 'API de agendamento de serviços para Sandim Jardinagem',
         },
     },
-    apis: ['./src/routes/*.js'],
+    apis: ['./src/docs/*.js'],
 };
 
 export default swaggerJsdoc(options);
