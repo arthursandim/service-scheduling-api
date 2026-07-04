@@ -8,6 +8,15 @@ const options = {
             version: '1.0.0',
             description: 'API de agendamento de serviços para Sandim Jardinagem',
         },
+        components: {
+            securitySchemes: {
+                bearerAuth: {
+                    type: 'http',
+                    scheme: 'bearer',
+                    bearerFormat: 'JWT',
+                },
+            },
+        },
     },
     apis: ['./src/docs/*.js'],
 };
