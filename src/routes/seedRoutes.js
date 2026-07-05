@@ -12,18 +12,14 @@ router.post('/professional', async (req, res) => {
   try {
     const { name = 'Seed User', email = 'seed@test.com', password = 'senha123' } = req.body;
 
-    await Professional.deleteMany({ email });
+    const existing = await Professional.findOne({ email });
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    if (!existing) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      await Professional.create({ name, email, password: hashedPassword, verified: true });
+    }
 
-    await Professional.create({
-      name,
-      email,
-      password: hashedPassword,
-      verified: true,
-    });
-
-    res.status(201).json({ email, password });
+    res.status(200).json({ email, password });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
