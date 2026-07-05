@@ -40,7 +40,9 @@ export const appointmentCreator = async (customer, dateTime, serviceType) => {
                     <p style="color: #aaa; font-size: 12px;">Service Scheduling — notificação automática</p>
                 </div>`
     };
-    await emailTransporter.sendMail(mailOptions);
+    if (process.env.NODE_ENV !== 'test') {
+        await emailTransporter.sendMail(mailOptions);
+    }
 
     return newAppointment;
 };
