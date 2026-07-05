@@ -4,6 +4,7 @@ import appointmentsRouter from './routes/appointmentRoutes.js';
 import authRouter from './routes/authRoutes.js';
 import botRouter from './routes/botRoutes.js';
 import whatsappRouter from './routes/whatsappRoutes.js';
+import customerRouter from './routes/customerRoutes.js';
 import seedRouter from './routes/seedRoutes.js';
 import { errorHandler } from './middlewares/errorHandler.js'
 import swaggerUi from 'swagger-ui-express';
@@ -17,6 +18,7 @@ app.use('/appointments', appointmentsRouter);
 app.use('/auth', authRouter);
 app.use('/chat', botRouter);
 app.use('/whatsapp', whatsappRouter);
+app.use('/customers', customerRouter);
 if (process.env.NODE_ENV === 'test') {
     app.use('/seed', seedRouter);
 }
