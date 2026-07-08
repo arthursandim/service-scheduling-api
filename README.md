@@ -34,6 +34,10 @@ GOOGLE_CALLBACK_URL=http://localhost:<porta>/auth/google/callback
 WHATSAPP_VERIFY_TOKEN=<token_de_verificacao_do_webhook>
 WHATSAPP_TOKEN=<token_permanente_meta_business>
 WHATSAPP_PHONE_NUMBER_ID=<id_do_numero_whatsapp_no_meta>
+GEMINI_MODEL=gemini-2.5-flash
+FRONTEND_URL=http://localhost:5173
+MONGODB_URI_TEST=mongodb+srv://<usuario>:<senha>@<cluster>.mongodb.net/<database_test>
+NODE_ENV=development
 ```
 
 ## Executando
@@ -72,11 +76,24 @@ npm start
 |---|---|---|
 | POST | `/chat` | Envia mensagem ao bot de agendamento (uso interno / Postman) |
 
+### Clientes
+> Exige header `Authorization: Bearer <token>`
+
+| Método | Rota | Descrição |
+|---|---|---|
+| POST | `/customers` | Cria novo cliente |
+
 ### WhatsApp
 | Método | Rota | Descrição |
 |---|---|---|
 | GET | `/whatsapp` | Verificação do webhook pelo Meta |
 | POST | `/whatsapp` | Recebe mensagens do WhatsApp e responde via bot |
+
+### Seed (apenas `NODE_ENV=test`)
+| Método | Rota | Descrição |
+|---|---|---|
+| POST | `/seed/professional` | Cria profissional de teste |
+| DELETE | `/seed/reset` | Limpa todos os dados do banco de testes |
 
 #### Body `/chat`
 ```json
@@ -87,6 +104,19 @@ npm start
 ```
 
 O campo `history` acumula o histórico da conversa no formato do Gemini. Ao final da conversa, o bot cria o cliente e o agendamento automaticamente no banco e um evento no Google Calendar do profissional.
+
+## Documentação
+
+Com o servidor rodando, acesse o Swagger em `http://localhost:3000/docs`.
+
+Em produção: `https://service-scheduling-api.onrender.com/docs`
+
+## Deploy
+
+Hospedado no [Render](https://render.com).
+
+- **Produção:** `https://service-scheduling-api.onrender.com`
+- **Staging:** `https://service-scheduling-api-dev.onrender.com` (`NODE_ENV=test`)
 
 ## Estrutura
 
