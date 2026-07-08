@@ -15,20 +15,22 @@ export const userCreator = async (name, email, password) => {
     const newUser = await Professional.create({ name, email, password: hashedPassword });
     const token = crypto.randomInt(100000, 999999).toString();
     await Professional.findByIdAndUpdate(newUser._id, { verificationToken: token });
-    await emailTransporter.sendMail({
-        from: process.env.EMAIL_USER,
-        to: email,
-        subject: 'Confirme seu cadastro',
-        html: `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; background-color: #f9f9f9; border-radius: 8px;">
-                    <h2 style="color: #333;">Confirme seu cadastro</h2>
-                    <hr style="border: none; border-top: 1px solid #ddd;" />
-                    <p style="color: #555; font-size: 15px;">Seu código de verificação é:</p>
-                    <p style="font-size: 32px; font-weight: bold; color: #3d7a52; letter-spacing: 8px;">${token}</p>
-                    <p style="color: #555; font-size: 14px;">Ou <a href="${process.env.FRONTEND_URL}/verificar?email=${email}" style="color: #3d7a52;">clique aqui</a> para ir à tela de confirmação.</p>
-                    <hr style="border: none; border-top: 1px solid #ddd;" />
-                    <p style="color: #aaa; font-size: 12px;">Service Scheduling — notificação automática</p>
-                </div>`
-    });
+    if (process.env.NODE_ENV !== 'test') {
+        await emailTransporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: 'Confirme seu cadastro',
+            html: `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; background-color: #f9f9f9; border-radius: 8px;">
+                        <h2 style="color: #333;">Confirme seu cadastro</h2>
+                        <hr style="border: none; border-top: 1px solid #ddd;" />
+                        <p style="color: #555; font-size: 15px;">Seu código de verificação é:</p>
+                        <p style="font-size: 32px; font-weight: bold; color: #3d7a52; letter-spacing: 8px;">${token}</p>
+                        <p style="color: #555; font-size: 14px;">Ou <a href="${process.env.FRONTEND_URL}/verificar?email=${email}" style="color: #3d7a52;">clique aqui</a> para ir à tela de confirmação.</p>
+                        <hr style="border: none; border-top: 1px solid #ddd;" />
+                        <p style="color: #aaa; font-size: 12px;">Service Scheduling — notificação automática</p>
+                    </div>`
+        });
+    }
     const { password: _, ...userWithoutPassword } = newUser.toObject();
     return userWithoutPassword;
 };
@@ -76,18 +78,20 @@ export const resendVerificationToken = async (email) => {
 
     const token = crypto.randomInt(100000, 999999).toString();
     await Professional.findByIdAndUpdate(user._id, { verificationToken: token });
-    await emailTransporter.sendMail({
-        from: process.env.EMAIL_USER,
-        to: email,
-        subject: 'Confirme seu cadastro',
-        html: `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; background-color: #f9f9f9; border-radius: 8px;">
-                    <h2 style="color: #333;">Confirme seu cadastro</h2>
-                    <hr style="border: none; border-top: 1px solid #ddd;" />
-                    <p style="color: #555; font-size: 15px;">Seu código de verificação é:</p>
-                    <p style="font-size: 32px; font-weight: bold; color: #3d7a52; letter-spacing: 8px;">${token}</p>
-                    <p style="color: #555; font-size: 14px;">Ou <a href="${process.env.FRONTEND_URL}/verificar?email=${email}" style="color: #3d7a52;">clique aqui</a> para ir à tela de confirmação.</p>
-                    <hr style="border: none; border-top: 1px solid #ddd;" />
-                    <p style="color: #aaa; font-size: 12px;">Service Scheduling — notificação automática</p>
-                </div>`
-    });
+    if (process.env.NODE_ENV !== 'test') {
+        await emailTransporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: 'Confirme seu cadastro',
+            html: `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; background-color: #f9f9f9; border-radius: 8px;">
+                        <h2 style="color: #333;">Confirme seu cadastro</h2>
+                        <hr style="border: none; border-top: 1px solid #ddd;" />
+                        <p style="color: #555; font-size: 15px;">Seu código de verificação é:</p>
+                        <p style="font-size: 32px; font-weight: bold; color: #3d7a52; letter-spacing: 8px;">${token}</p>
+                        <p style="color: #555; font-size: 14px;">Ou <a href="${process.env.FRONTEND_URL}/verificar?email=${email}" style="color: #3d7a52;">clique aqui</a> para ir à tela de confirmação.</p>
+                        <hr style="border: none; border-top: 1px solid #ddd;" />
+                        <p style="color: #aaa; font-size: 12px;">Service Scheduling — notificação automática</p>
+                    </div>`
+        });
+    }
 };
